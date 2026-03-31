@@ -82,11 +82,44 @@ py_test(
     imports = [".."],
 )
 
+pytype_strict_library(
+    name = "version",
+    srcs = [":version_py"],
+)
+
+pytype_strict_library(
+    name = "main_lib",
+    srcs = ["main.py"],
+    deps = [
+        ":help_formatter",
+        ":model",
+        ":venv_manager",
+        ":version",
+        "//python/litert_lm",
+        requirement("click"),
+        requirement("huggingface_hub"),
+    ],
+    imports = [".."],
+)
+
+py_test(
+    name = "main_test",
+    srcs = ["main_test.py"],
+    tags = [
+        "nowindows",
+    ],
+    deps = [
+        ":main_lib",
+        "@absl_py//absl/testing:absltest",
+        requirement("click"),
+    ],
+    imports = [".."],
+)
+
 pytype_strict_binary(
     name = "litert-lm",
     srcs = [
         "main.py",
-        ":version.py",
     ],
     main = "main.py",
     tags = [
@@ -95,12 +128,7 @@ pytype_strict_binary(
         "nowindows",
     ],
     deps = [
-        ":help_formatter",
-        ":model",
-        ":venv_manager",
-        "//python/litert_lm",
-        requirement("click"),
-        requirement("huggingface_hub"),
+        ":main_lib",
     ],
     imports = [".."],
 )
