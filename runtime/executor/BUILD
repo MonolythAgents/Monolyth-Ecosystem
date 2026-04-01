@@ -668,6 +668,7 @@ cc_library(
             "@litert//litert/cc:litert_api_with_dynamic_runtime",
         ],
         "//conditions:default": [
+            "@litert//litert/cc:litert_macros",
             "@litert//litert/cc:litert_tensor_buffer",
         ],
     }),
@@ -680,13 +681,16 @@ cc_test(
         ":llm_executor_io_types",
         "@com_google_googletest//:gtest_main",
         "@com_google_absl//absl/types:span",
+        "@litert//litert/c:litert_tensor_buffer_types",
         "@litert//litert/cc:litert_element_type",
         "@litert//litert/cc:litert_environment",
         "@litert//litert/cc:litert_layout",
         "@litert//litert/cc:litert_model",
+        "@litert//litert/cc:litert_ranked_tensor_type",
         "@litert//litert/cc:litert_tensor_buffer",
         "//runtime/components/constrained_decoding:constrained_decoder",
         "//runtime/components/constrained_decoding:fake_constraint",
+        "//runtime/util:test_utils",
     ],
 )
 
