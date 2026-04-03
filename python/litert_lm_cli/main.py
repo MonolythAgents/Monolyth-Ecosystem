@@ -18,6 +18,7 @@ import datetime
 import os
 import shutil
 import subprocess
+import sys
 
 import click
 
@@ -460,6 +461,23 @@ def run(
     from_huggingface_repo: The HuggingFace repository ID.
     huggingface_token: The HuggingFace API token.
   """
+  # If the stdin is not connected to the terminal, e.g., piped or redirected
+  # input, then handle the input as the one-shot prompt.
+  #
+  # # Redirected input:
+  # $ litert-lm run < prompt.txt
+  # $ litert-lm run --prompt="Explain this error log" < error.log
+  #
+  # # Piped input:
+  # $ cat text.txt | litert-lm run --prompt="Summarize the content."
+  if not sys.stdin.isatty():
+    piped_input = sys.stdin.read().strip()
+    if piped_input:
+      prompt = f"{prompt}\n\n{piped_input}" if prompt else piped_input
+    elif not prompt:
+      # If no prompt is provided and it's not a TTY, we can't be interactive.
+      return
+
   if verbose:
     litert_lm.set_min_log_severity(litert_lm.LogSeverity.VERBOSE)
 
